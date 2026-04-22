@@ -1,8 +1,8 @@
-from .database import Database
+from .dataBase import DataBase
 
-class TareaModel:
+class Tarea:
     def __init__(self):
-        self.db = Database()
+        self.db = DataBase() 
         
     def listar_por_usuario(self, usuario_id):
         conn = self.db.get_connection()
