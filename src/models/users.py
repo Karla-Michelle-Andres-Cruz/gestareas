@@ -1,45 +1,32 @@
 import bcrypt
 from .dataBase import DataBase
 
-class UsuarioModel:
-    def __init__(self):
-        self.db = DataBase()
+class Usuario:
+    def registrar(self, nombre, apellido, email, password, telefono=None):
+        conn = DataBase.get_connection()
+        cursor = conn.cursor()
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        query = """INSERT INTO usuario (nombre, apellido, email, password, telefono) 
+                    VALUES (%s, %s, %s, %s, %s)"""
+        cursor.execute(query, (nombre, apellido, email, password_hash, telefono))
+        conn.commit()
+        conn.close()
 
-    def registrar(self, usuario_data):
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(usuario_data.password.encode('utf-8'), salt)
-        
-        conn = self.db.get_connection()
-        cursor = conn.cursor()
-        
-        try:
-            cursor.execute(
-                "INSERT INTO usuario (nombre, email, password) VALUES (%s, %s, %s)",
-                (usuario_data.nombre, usuario_data.email, hashed_password.decode('utf-8'))
-            )
-            conn.commit()
-            return True
-        except Exception as e:
-            print(f"Error: {e}")
-            return False
-        finally:
-            conn.close()
-            
-            
-    def validar_login(self, email, password):
-        conn = self.db.get_connection()
-        cursor = conn.cursor()
-        
-        try:
-            cursor.execute("SELECT password FROM usuario WHERE email = %s", (email,))
-            result = cursor.fetchone()
-            
-            if result:
-                stored_password = result[0].encode('utf-8')
-                return bcrypt.checkpw(password.encode('utf-8'), stored_password)
-            return False
-        except Exception as e:
-            print(f"Error: {e}")
-            return False
-        finally:
-            conn.close()
+    def login(self, email, password):
+        conn = DataBase.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = "SELECT * FROM usuario WHERE email = %s AND activo = 1"
+        cursor.execute(query, (email,))
+        usuario = cursor.fetchone()
+        conn.close()
+        if usuario and bcrypt.checkpw(password.encode('utf-8'), usuario['password'].encode('utf-8')):
+            return usuario
+        return None
+
+    def buscar_por_id(self, id_usuario):
+        conn = DataBase.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM usuario WHERE id_usuario = %s", (id_usuario,))
+        resultado = cursor.fetchone()
+        conn.close()
+        return resultado

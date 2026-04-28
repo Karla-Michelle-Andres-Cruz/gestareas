@@ -5,32 +5,35 @@ def LoginView(page, auth_controller):
     pass_imput = ft.TextField(label="Contraseña", width=350, border_radius=10, password=True, can_reveal_password=True)
     
     def login_click(e):
-        user, nsg = auth_controller.login(email_imput.value, pass_imput.value)
+        if not email_imput.value or not pass_imput.value:
+            page.show_dialog(ft.SnackBar(ft.Text("Por favor, complete todos los campos")))
+            
+            return
+        
+        user, msg = auth_controller.login(email_imput.value, pass_imput.value)
+        
         if user:
-            page.session.set("user", user)
+            page.user_data = user
             page.go("/dashboard")
         else:
-            page.snack_bar = ft.SnackBar(ft.Text(nsg))
-            page.snack_bar.open = True
-            page.update()
-            
+            page.show_dialog(ft.SnackBar(ft.Text(msg)))
+
+
+
     return ft.View(
         route="/",
+        vertical_alignment=ft.MainAxisAlignment.CENTER, 
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        appbar = ft.AppBar(
+            title=ft.Text("SIGE - Login"),
+            bgcolor=ft.Colors.BLUE_GREY_900
+        ),
         controls=[
-            ft.AppBar(title=ft.Text("SIGE - Login"), bgcolor=ft.Colors.BLUE_GREY_900),
-            ft.Container(
-                content=ft.Column([
-                    ft.Icon("lock", size=48, color=ft.Colors.BLUE),
-                    ft.Text("Acceso al sistema", size=24, weight="bold"),
-                    email_imput,
-                    pass_imput,
-                    ft.ElevatedButton("Entrar", on_click=login_click, width=350),
-                    ft.TextButton("Crear una cuenta nueva", on_click=lambda _: page.go("/registro"))
-                ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                alignment=ft.MainAxisAlignment.CENTER),
-                expand=True,
-                alignment=ft.Alignment(0, 0)
-            )
+            ft.Icon(ft.Icons.LOCK, size=48, color=ft.Colors.BLUE),
+            ft.Text("Acceso al sistema", size=24, weight="bold"),
+            email_imput,
+            pass_imput,
+            ft.ElevatedButton("Entrar", on_click=login_click, width=350),
+            ft.TextButton("Crear una cuenta nueva", on_click=lambda _: page.go("/registro"))
         ]
     )
