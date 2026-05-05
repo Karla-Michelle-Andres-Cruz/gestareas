@@ -1,5 +1,5 @@
 from models.users import Usuario
-from models.schemas import UserSchema
+from models.schemas import UserSchema, UsuarioAlta
 from pydantic import ValidationError
 
 class AuthController:
@@ -8,7 +8,7 @@ class AuthController:
         
     def registrar_usuario(self, nombre, apellido, email, password):
         try:
-            nuevo_usuario = UserSchema(
+            nuevo_usuario = UsuarioAlta(
                 nombre=nombre,
                 apellido=apellido,
                 email=email,
