@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-from datetime import date, time
+from datetime import date, datetime, time
 
 class UserSchema(BaseModel):
     nombre: str = Field(min_length=3, max_length=100)
@@ -13,3 +13,12 @@ class TareaSchema(BaseModel):
     descripcion : Optional[str] = None
     prioridad : str = "media"
     clasificacion : str = "personal"
+    
+class UsuarioAlta(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=8)
+    
+    
+    activo: bool = True
+    fecha_ingreso: datetime = Field(default_factory=datetime.now)
+    ultimo_acceso: datetime = Field(default_factory=datetime.now)
