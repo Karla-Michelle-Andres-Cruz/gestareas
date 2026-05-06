@@ -13,8 +13,8 @@ def RegistroView(page, auth_controller):
             email_input.value,
             pass_input.value
         )
-        page.open(ft.SnackBar(ft.Text(msg)))
-
+        page.snack_bar = ft.SnackBar(ft.Text(msg))
+        page.snack_bar.open = True
         if success:
             page.go("/")
         page.update()
