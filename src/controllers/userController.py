@@ -26,9 +26,9 @@ class AuthController:
         
     def login(self, email, password):
         try:
-            usuario = UserSchema
+            usuario = self.model.login(email, password)
             if usuario:
                 return usuario, "Bienvenido"
             return None, "Correo o contraseña incorrectos"
         except Exception as e:
-                return None, str(e)
+            return None, str(e)

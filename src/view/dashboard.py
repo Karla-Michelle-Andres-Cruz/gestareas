@@ -3,7 +3,6 @@ import flet as ft
 def DashboardView(page, auth_ctrl, tarea_ctrl):
     user = page.session.get("user")
     
-    # ✅ Si no hay sesión, redirige al login
     if not user:
         page.go("/")
         return ft.View("/dashboard", [])
