@@ -17,6 +17,7 @@ class Tarea:
                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
         cursor.execute(query, (id_usuario, titulo, descripcion, prioridad, clasificacion, fecha_limite, hora_limite))
         conn.commit()
+        cursor.close()
         conn.close()
 
     def completar(self, id_tarea):

@@ -6,7 +6,8 @@ def LoginView(page, auth_controller):
 
     def login_click(e):
         if not email_input.value or not pass_input.value:
-            page.open(ft.SnackBar(ft.Text("Por favor, complete todos los campos")))
+            page.snack_bar = ft.SnackBar(ft.Text("Por favor, complete todos los campos"), open=True)
+            page.update()
             return
 
         user, msg = auth_controller.login(email_input.value, pass_input.value)
@@ -15,22 +16,19 @@ def LoginView(page, auth_controller):
             page.data = {"user": user}
             page.go("/dashboard")
         else:
-            page.open(ft.SnackBar(ft.Text(msg)))
+            page.snack_bar = ft.SnackBar(ft.Text(msg), open=True)
+            page.update()
 
-    return ft.View(
-        route="/",
-        vertical_alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        appbar=ft.AppBar(
-            title=ft.Text("SIGE - Login"),
-            bgcolor=ft.Colors.BLUE_GREY_900
-        ),
-        controls=[
+    return ft.Column(
+        [
+            ft.AppBar(title=ft.Text("SIGE - Login"), bgcolor=ft.Colors.BLUE_GREY_900),
             ft.Icon(ft.Icons.LOCK, size=48, color=ft.Colors.BLUE),
             ft.Text("Acceso al sistema", size=24, weight="bold"),
             email_input,
             pass_input,
             ft.ElevatedButton("Entrar", on_click=login_click, width=350),
             ft.TextButton("Crear una cuenta nueva", on_click=lambda _: page.go("/registro"))
-        ]
+        ],
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        expand=True,
     )

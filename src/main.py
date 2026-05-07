@@ -11,21 +11,17 @@ def start(page: ft.Page):
 
     def route_change(e):
         print(f" route_change llamado: {page.route}")
-        page.views.clear()
+        page.controls.clear()
         if page.route == "/":
-            page.views.append(LoginView(page, auth_ctrl))
+            page.controls.append(LoginView(page, auth_ctrl))
         elif page.route == "/registro":
-            page.views.append(RegistroView(page, auth_ctrl))
+            page.controls.append(RegistroView(page, auth_ctrl))
         elif page.route == "/dashboard":
-            page.views.append(DashboardView(page, auth_ctrl, tarea_ctrl))
+            page.controls.append(DashboardView(page, auth_ctrl, tarea_ctrl))
         page.update()
 
     page.on_route_change = route_change
-
-    page.views.append(LoginView(page, auth_ctrl))
-    page.update()
-    
-    page.go("/")
+    route_change(None)
 
 def main():
     ft.app(target=start)

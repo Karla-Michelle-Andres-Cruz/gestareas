@@ -13,14 +13,12 @@ def RegistroView(page, auth_controller):
             email_input.value,
             pass_input.value
         )
-        page.snack_bar = ft.SnackBar(ft.Text(msg))
-        page.snack_bar.open = True
+        page.show_snack_bar(ft.SnackBar(ft.Text(msg)))
         if success:
             page.go("/")
         page.update()
 
-    return ft.View(
-        route="/registro",
+    return ft.Column(
         controls=[
             ft.AppBar(title=ft.Text("SIGE - Registro"), bgcolor=ft.Colors.BLUE_GREY_900),
             ft.Container(
